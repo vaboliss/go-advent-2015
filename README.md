@@ -1,2 +1,1 @@
-# go-advent-2015
-# go-advent-2015
+Advent of code using go programming language
