@@ -17,46 +17,37 @@ func loadFile(input string) (*bufio.Scanner, *os.File) {
 }
 
 
-func isStringNiceV2(input string) bool {
+func isStringNiceV2(input string) int {
 
-	lenghtOfString := len(input)
-	for i,j := 0,1; j < lenghtOfString; i,j = i+1, j+1  {
-
-		pair := string(input[i]) + string(input[j])
-		substring := input[j:lenghtOfString]
-
-		if(!strings.Contains(substring, pair)){
-			continue;
-		}
-
-		indexOfSecondPair := strings.Index(substring, pair)
-
-		if(indexOfSecondPair == -1){
-			continue
-		}
-
-		spaceBetween := input[j:indexOfSecondPair]
-
-		for i := 0; i < len(spaceBetween); i++ {
-			
-			character := string(spaceBetween[i])
-			withoutCharacter := spaceBetween[i+1:len(spaceBetween)-i]
-			indexOfSecond := strings.Index(withoutCharacter, character)
-
-			if (indexOfSecond == -1){
-				continue
+	var nice int
+	passesRule1 := func(line string) bool {
+		for i := 0; i < len(line)-2; i++ {
+			toMatch := line[i : i+2]
+			for j := i + 2; j < len(line)-1; j++ {
+				if line[j:j+2] == toMatch {
+					return true
+				}
 			}
-
-			if(indexOfSecond - i == 1){
-				return true
-			}
-
-
 		}
-
+		return false
 	}
 
-	return false
+	for _, line := range strings.Split(input, "\n") {
+		rule1 := passesRule1(line)
+
+		var rule2 bool
+		for i := 0; i < len(line)-2; i++ {
+			if line[i] == line[i+2] {
+				rule2 = true
+				break
+			}
+		}
+		if rule1 && rule2 {
+			nice++
+		}
+	}
+
+	return nice
 }
 
 func isStringNice(input string) bool {
@@ -118,16 +109,14 @@ func main() {
 	for scanner.Scan() {
 		stringInput := scanner.Text()
 
-		fmt.Println(stringInput)
 		if isStringNice(stringInput){
 			firstCounter++
 		}
 
-		if isStringNiceV2(stringInput){
-			secondCounter++
-		}
-
 	}
+	 
+	allTextBytes, _ := os.ReadFile("input.txt")
+	secondCounter = isStringNiceV2(string(allTextBytes));
 
 	fmt.Println("first part number of nice strings:", firstCounter)
 	fmt.Println("second part number of nice strings:", secondCounter)
