@@ -6,10 +6,6 @@ import (
 	"os"
 )
 
-type coord struct {
-	x, y int
-}
-
 func loadFile(input string) (*bufio.Scanner, *os.File) {
 	file, _ := os.Open(input + ".txt")
 	return bufio.NewScanner(file), file
